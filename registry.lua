@@ -1,4 +1,4 @@
-DEBUG_MODE = true
+DEBUG_MODE = false
 
 if DEBUG_MODE then
     require('lovedebug')
@@ -7,7 +7,9 @@ end
 lg=love.graphics
 vl=require('hump-master/vector-light')
 tw=require('tween')
-b = require('branch')
+branch = require('branch')
+leaf = require('leaf')
+bud = require('bud')
 t= require('tree')
 button = require('button')
 gs = require('hump-master/gamestate')
@@ -23,8 +25,9 @@ state={
 }
 
 screen={w=lg.getWidth(),h=lg.getHeight()}
-days = 500
-sun = 90000
+yearTime = 600
+environment = {sunMod=1,state=1,minSun=3,maxSun=10}
+sunTween = tw.new(yearTime,environment,{sunMod=environment.maxSun},'linear')
 id=0
 
 bsort={}
@@ -51,3 +54,4 @@ colors.trunk = {85,29,0}
 colors.branch = {128,57,21}
 colors.sprout = {170,95,57}
 colors.selected = {187,0,18}
+colors.leaf = {0,255,0}

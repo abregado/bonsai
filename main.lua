@@ -2,19 +2,18 @@ require('registry')
 
 function love.load()
     treeReset()    
-    dataControl.load()
+    --dataControl.load()
     gs.registerEvents()
     gs.switch(state.game)
 end
 
 function treeReset()
-    --math.randomseed(os.time()) 
-    math.randomseed(2) 
+    math.randomseed(os.time()) 
     tree=t.new(screen.w/2,screen.h)
 end
 
 function love.quit()
-    dataControl.save()
+    --dataControl.save()
 end
 
 
@@ -31,17 +30,9 @@ end
 --new tree starts in small pot, season is randomised
 
 
---sunlight fluctuates over time to simulate seasons
---energy a function of (smaller of leaves, sunlight and root mass(water))
---total mass of the tree consumes some energy
---leaves will die if they are not needed (eg, less sunlight than they can absorb)
---leaves "closer" to the roots die first
---if no leaves then some of the rootmass can be consumed for energy, but only if there is less branch mass than root mass (cut a branch off to trigger)
---energy used to grow first leaves, then (root structure+branches) 
---roots + branch grow at the same time
---leaves grow if there is more potential for energy
---leaves grow only from new shoots
---growing leaves consume more energy
+--leaves grow from buds further from the trunk
+--branches grow preferentially from the trunk
+--trunk gets thicker at base
 
 --graphical things
 --leaf color determined by health

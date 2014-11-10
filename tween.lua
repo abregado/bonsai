@@ -329,12 +329,11 @@ function Tween:set(clock)
 
     self.clock = self.duration
     copyTables(self.subject, self.target)
-    self.complete = true
 
   else
 
     performEasingOnSubject(self.subject, self.target, self.initial, self.clock, self.duration, self.easing)
-
+    
   end
 
   return self.clock >= self.duration

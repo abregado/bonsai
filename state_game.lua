@@ -16,12 +16,25 @@ function game:draw()
         --lg.line(b.x,b.y,mx,my)
     end
     
-    dataControl.draw()
+    lg.setColor(0,255,0)
+    lg.print("Branch Mass: "..tree.mass,0,0)
+    lg.print("Root Mass: "..tree.rootMass,0,15)
+    lg.print("Leaves: "..#tree.leaves,0,30)
+    lg.print("Branches: "..#tree.branches,0,45)
+    lg.print("Buds: "..#tree.buds,0,60)
+    lg.print("Lacking most: "..tree.lack,0,75)
+    lg.print("rootEnergy: "..tree.rootEnergy,0,90)
+    lg.print("leafEnergy: "..tree.leafEnergy,0,105)
+    lg.print("Leaf Area: "..tree.leafArea,0,120)
+    lg.print("Sunlight: "..environment.sunMod,0,135)
+    
 end
 
 function game:update(dt)
+    dt=dt*5
     if not PAUSE then
-    tree:grow(sun,dt)
+        doSeasons(dt)
+        tree:grow(dt)
     end
     
     local mx,my = love.mouse.getPosition()
@@ -38,16 +51,26 @@ function game:update(dt)
     if mTime>0.5 and hover==nil then
         hover = findBranch(mx,my)
     end
+    
+    
+    
+        
+    
+end
+
+function doSeasons(dt)
+    local complete = sunTween:update(dt)
+    if complete and environment.state == 1 then
+        sunTween = tw.new(yearTime,environment,{sunMod=environment.minSun},'linear')
+        environment.state = 0
+    elseif complete and environment.state == 0 then
+        sunTween = tw.new(yearTime,environment,{sunMod=environment.maxSun},'linear')
+        environment.state = 1
+    end
 end
 
 function game:mousepressed()
-    tree:untick()
-    local x,y = love.mouse.getPosition()
-    local b=findBranch(x,y)
-    if b then
-        b:tick()
-        selectedB = b
-    end
+
 end
 
 function game:keypressed(key)
@@ -73,7 +96,11 @@ function game:keypressed(key)
         selectedB=nil
     elseif key == " " then
         PAUSE = not PAUSE
-        if PAUSE then dataControl.save() end
+    elseif key == "=" then
+        sun = sun + 1000
+    elseif key == "-" then
+        sun = sun - 1000
+        if sun < 0 then sun = 0 end
     end
     --lg.setCanvas(cav)
         
