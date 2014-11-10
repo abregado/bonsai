@@ -153,6 +153,10 @@ function t:growLeaves(energy,dt)
 end
 
 function t:growBranches(energy,dt)
+    if self.growingBranches < #self.leaves and self.leafEnergy < self.rootEnergy then 
+        energy = self:convertBudstoBranches(energy)
+    end
+
     local energyPerBranch = energy/#self.branches
     for i,v in ipairs(self.branches) do
         v:grow(energyPerBranch,dt)
@@ -163,14 +167,14 @@ function t:convertBudstoLeaves(energy,dt)
     --uses energy to change buds into leaves. Returns the remaining energy.
     if energy > (species.leafCost*dt) and #self.buds > 0 and #self.leaves < (#self.branches) then
         print("making a new leaf from bud")
-        local r = math.random(1,#self.buds)
+        r = math.random(1,#self.buds)
         local chosenBud = self.buds[r]
-        if not chosenBud.parent.isTrunk then
+        --if chosenBud.parent.isGrowing or chosenBud.parent.isTrunk == false then
             local newLeaf = leaf.new(chosenBud)
             table.insert(self.leaves,newLeaf)
             table.remove(self.buds,r)
             energy = energy - (species.leafCost*dt)
-        end
+        --end
     elseif #self.buds == 0 then
         print("no buds to make into leaves")
         energy = self:convertEnergytoBuds(energy,dt)
@@ -197,16 +201,19 @@ end
 
 function t:convertBudstoBranches(energy)
     --uses energy to change buds into branches until there are no buds or energy is less than branch cost. Returns the remaining energy.
-    if energy > species.branchCost then
-        --local r = math.random()
-        --while energy > species.branchCost and #self.buds > 0 do
-            --r = math.random(1,#self.buds)
-            local newBranch = branch.new(self.buds[r])
-            table.insert(self.branches,newBranch)
-            table.remove(self.buds,r)
-            energy = energy - species.branchCost
-       -- end
-    end
+    
+        if energy > species.branchCost and #self.buds > 0 then
+            --local r = math.random()
+            --while energy > species.branchCost and #self.buds > 0 do
+                r = math.random(1,#self.buds)
+                local chosenBud = self.buds[r]
+                local newBranch = branch.new(chosenBud)
+                table.insert(self.branches,newBranch)
+                table.remove(self.buds,r)
+                energy = energy - species.branchCost
+           -- end
+        end
+    
     return energy
 end
         
