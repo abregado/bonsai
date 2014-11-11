@@ -73,6 +73,7 @@ function button:draw()
     local th = font:getHeight(label)
     lg.print(label,self.x+(self.w/2)-(tw/2),self.y+(self.h/2)-(th/2))
 	
+    lg.setFont(fontD)
 	
 end
 

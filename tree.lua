@@ -53,6 +53,7 @@ function t.new(x,y)
     o.countGrowingLeaves = t.countGrowingLeaves
     o.addRootMass = t.addRootMass
     o.findEnergy = t.findEnergy
+    o.findBranch = t.findBranch
     o.totalLeafArea = t.totalLeafArea
     o.convertBudtoBranch = t.convertBudtoBranch
     o.growLeaves = t.growLeaves
@@ -60,6 +61,7 @@ function t.new(x,y)
     o.convertEnergytoBuds = t.convertEnergytoBuds
     o.convertBudstoBranches = t.convertBudstoBranches
     o.growBranches = t.growBranches
+    o.untickAll = t.untickAll
     
     return o
 end
@@ -228,61 +230,32 @@ function t:grow(dt)
         local leafGrowth = energy*0.8
         local branchGrowth = energy - leafGrowth
         leafGrowth = self:growLeaves(energy/2,dt)
-        if self.rootMass < species.potSize then
+        if self.rootMass < species.potSize or self.mass < self.rootMass then
             self:growBranches(energy/2,dt)
         else
             self:convertEnergytoBuds(energy/2,dt)
         end
     end
-        
-        --[[if lack == "leafEnergy" then            
-            if self.growingLeaves > 0 then
-                self.lack = "leaf energy low: divide energy among leaves"
-                self:growLeaves(energy/2,dt)
-                energy = energy/2
-                if #self.buds > 0 then
-                    energy = self:convertBuds(energy)
-                end
-                if #self.buds == 0 then
-                    energy = self:convertEnergytoBuds(energy)
-                end
-                self:growLeaves(energy,dt)
-            else
-                self.lack = "no leaves growing, make some"
-                if #self.buds > 0 then
-                    energy = self:convertBudstoLeaves(energy)
-                elseif #self.buds == 0 then
-                    energy = self:convertEnergytoBuds(energy)
-                end
-                self:growLeaves(energy,dt)
-            end
-            
-        elseif lack == "rootEnergy" and self.rootMass < species.potSize then
-            
-            if #self.buds > 0 then
-                --spend half energy on converting buds to branches
-                energy = (energy/2) + self:convertBudstoBranches(energy/2)
-                --spend half energy on growing all branches
-                self:growBranches(energy)
-            elseif self.growingBranches > 0 then
-                --spend energy growing branches longer/wider (extra root mass)
-                self:growBranches(energy)
-            elseif self.growingBranches == 0 and #self.buds > 0 then
-                --spend half energy on converting buds to branches
-                energy = (energy/2) + self:convertBudstoBranches(energy/2)
-                --spend half energy on growing all branches
-                self:growBranches(energy)
-            else
-                --spend energy on new buds
-                energy = self:convertEnergytoBuds(energy)
-                self:growBranches(energy)
-            end
-        else 
-            
+    
+    for i,v in ipairs(self.branches) do
+        if not t.checkFor(v.parent,self.branches) and i > 1 then
+            v.isDead = true
         end
-    else --(energy less than or equal to zero)
-        --tree is dormant until spring
-    end]]
+        if v.parent and v.parent.selected then
+            v.selected = true
+        end
+    end
+    
+    for i,v in ipairs(self.leaves) do
+        if not t.checkFor(v.parent,self.branches) then
+            v.isDead = true
+        end
+    end
+    for i,v in ipairs(self.buds) do
+        if not t.checkFor(v.parent,self.branches) then
+            v.isDead = true
+        end
+    end
     
     for i,v in ipairs(self.leaves) do
         if v.isDead then
@@ -290,13 +263,27 @@ function t:grow(dt)
         end
     end
     
-    --[[local energy = (energy-((self.mass+self.rootMass)*massCost))/self.growingBranches*dt
-    
     for i,v in ipairs(self.branches) do
-        v:grow(energy,dt)
-    end]]
+        if v.isDead then
+            table.remove(self.branches,i)
+        end
+    end
     
+    for i,v in ipairs(self.buds) do
+        if v.isDead then
+            table.remove(self.buds,i)
+        end
+    end
     
+end
+
+function t.checkFor(obj,array)
+    for i,v in ipairs(array) do
+        if v == obj then
+            return true
+        end
+    end
+    return false
 end
 
 function t:tick()
@@ -312,8 +299,10 @@ function t:display()
         v:display(energy,dt)
     end
     
-    for i,v in ipairs(self.leaves) do
-        v:draw()
+    if not selectedB then
+        for i,v in ipairs(self.leaves) do
+            v:draw()
+        end
     end
 end
 
@@ -361,17 +350,24 @@ function t:getPos()
     return {x=self.x,y=self.y}
 end
 
-function findBranch(x,y,exc)
-    bsort={}
-    --tree.report(tree)
+function t:untickAll()
+    for i,v in ipairs(self.branches) do
+        v.selected = false
+    end
+end
+
+function t:findBranch(x,y,exc)
+
     local dist= 9999999999
     local close = nil
-    for i,v in ipairs(bsort) do
-        if vl.dist(v.x,v.y,x,y) <= dist then
+    for i,v in ipairs(self.branches) do
+        local vDist = vl.dist(v.x,v.y,x,y)
+        if vDist <= dist then
             if v==selectedB then
+                --this is the selected one so do nothing
             else
                 close = v
-                dist = vl.dist(v.x,v.y,x,y)
+                dist = vDist
             end
         end
     end

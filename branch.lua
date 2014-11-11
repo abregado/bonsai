@@ -145,7 +145,8 @@ function b:grow(energy,dt)
     local a= math.cos(self.ang)*self.l 
     self.ex=self.x+a
     self.ey=self.y-o
-
+    
+    
 end 
 
 function b:thicken(modifier) --increase max width by a percentage

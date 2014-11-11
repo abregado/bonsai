@@ -1,6 +1,11 @@
 game = {}
 
 function game:enter()
+    game.buttons = {}
+    game.buttons.toolbox = button.new(res.w/4*3,res.h/4*3,res.w/8,res.w/8)
+    game.buttons.toolbox.label = "Toolbox"
+    --game.buttons.toolbox = button.new(0,0,100,100)
+    
 end
 
 function game:draw()
@@ -28,19 +33,19 @@ function game:draw()
     lg.print("Leaf Area: "..tree.leafArea,0,120)
     lg.print("Sunlight: "..environment.sunMod,0,135)
     
+    game.buttons.toolbox:draw()
+    
 end
 
 function game:update(dt)
-    dt=dt*5
+    dt = dt*2
     if not PAUSE then
         doSeasons(dt)
         tree:grow(dt)
     end
     
-    local mx,my = love.mouse.getPosition()
-    
-    
-    if mPos.x == mx and mPos.y == my then
+   
+    --[[if mPos.x == mx and mPos.y == my then
         mTime = mTime+dt
     else
         mTime=0
@@ -50,7 +55,7 @@ function game:update(dt)
     
     if mTime>0.5 and hover==nil then
         hover = findBranch(mx,my)
-    end
+    end]]
     
     
     
@@ -70,26 +75,26 @@ function doSeasons(dt)
 end
 
 function game:mousepressed()
-
+    tree:untickAll()
+    local mx,my = love.mouse.getPosition()
+    local nearest = tree:findBranch(mx,my)
+    selectedB = nearest
+    selectedB.selected = true
 end
 
 function game:keypressed(key)
     --tree:grow(sun,10)
     if key == "r" then
         treeReset()
-    elseif key == "a" then
-        tree:tick()
     elseif key == "s" then
-        tree:untick()
+        tree:untickAll()
         selectedB=nil
-    elseif key == "d" then
-        bsort={}
-        tree:report()
-        for i,v in ipairs(bsort) do
-            v.selected=true
-        end
+    elseif key == "k" and selectedB then
+        selectedB.isDead = true
+        selectedB = nil
     elseif key == "p" and selectedB and selectedB.parent then
-        selectedB.parent:prune(selectedB,true)
+        selectedB.parent:knosper()
+        selectedB.isDead = true
         selectedB=nil
     elseif key == "o" and selectedB and selectedB.parent then
         selectedB.parent:prune(selectedB,false)

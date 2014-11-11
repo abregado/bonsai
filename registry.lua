@@ -16,7 +16,7 @@ gs = require('hump-master/gamestate')
 dataControl = require('dataControl')
 require('serialize')
 
-
+fontD = lg.newFont()
 rawData = {}
 
 --gamestates
@@ -25,6 +25,7 @@ state={
 }
 
 screen={w=lg.getWidth(),h=lg.getHeight()}
+res = screen
 yearTime = 600
 environment = {sunMod=1,state=1,minSun=3,maxSun=10}
 sunTween = tw.new(yearTime,environment,{sunMod=environment.maxSun},'linear')
@@ -43,7 +44,12 @@ mTime=0
 mPos={x=0,y=0}
 r=math.random()
 
-
+as = {}
+as.saw = lg.newImage("assets/hand-saw.png")
+as.scissors = lg.newImage("assets/scissors.png")
+as.chest = lg.newImage("assets/locked-chest.png")
+as.nuke = lg.newImage("assets/mass-driver.png")
+as.tick = lg.newImage("assets/tick.png")
 
 total = 0 
 tips={}
