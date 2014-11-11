@@ -40,6 +40,10 @@ s={}
 s.t={w=10}
 s.b={w=6}
 
+
+potW = res.w/5
+potH = 80
+Xoff = 110
 mTime=0
 mPos={x=0,y=0}
 r=math.random()
@@ -61,3 +65,4 @@ colors.branch = {128,57,21}
 colors.sprout = {170,95,57}
 colors.selected = {187,0,18}
 colors.leaf = {0,255,0,125}
+colors.pot = {0,125,250}

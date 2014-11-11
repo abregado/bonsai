@@ -9,7 +9,7 @@ end
 
 function treeReset()
     math.randomseed(os.time()) 
-    tree=t.new(screen.w/2,screen.h)
+    tree=t.new(screen.w/2,screen.h-100)
 end
 
 function love.quit()

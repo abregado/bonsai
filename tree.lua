@@ -6,7 +6,7 @@ species = {
     minBranchLength = 60,
     maxBranchLength = 100,
     bendyness = 2,
-    maxThickness = 10,
+    maxThickness = 50,
     budCost = 1,
     leafCost = 2,
     branchCost = 100,
@@ -22,6 +22,8 @@ species = {
     knosperChance = 20,
     branchSurvivalRate = 40
 }
+
+
     
         
 
@@ -41,6 +43,8 @@ function t.new(x,y)
     o.lastEnergy = 0
     o.lastMaint = 0
     o.leafArea = 0
+    o.x = x
+    o.y = y
     
     
     t.addFirstBranch(o,x,y)
@@ -304,6 +308,15 @@ function t:display()
             v:draw()
         end
     end
+    
+    lg.setColor(colors.pot)
+    local pot = {x=self.x-Xoff,y=self.y}
+    lg.rectangle("fill",pot.x,pot.y,potW,potH)
+    lg.rectangle("fill",pot.x-20,pot.y,potW+40,potH/5)
+    lg.rectangle("fill",pot.x+10,pot.y+potH,potW/5,potH/10)
+    lg.rectangle("fill",pot.x+potW-60,pot.y+potH,potW/5,potH/10)
+    
+    
 end
 
 function t:report()

@@ -4,6 +4,7 @@ function leaf.new(bud)
     o = {}
     o.area = 1
     o.maxArea = math.random(species.minLeafArea,species.maxLeafArea)
+    o.maxAge = math.random(1,species.leafAge)
     o.isGrowing = true
     o.isLeaf = true
     o.parent = bud.parent 
@@ -30,7 +31,7 @@ function leaf:grow(energy,dt)
         end
     end
     
-    if self.age > species.leafAge then
+    if self.age > self.maxAge then
         self:drop()
     end
 end

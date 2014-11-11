@@ -15,6 +15,7 @@ function b.new(bud)
         o.splitChance = bud.parent.splitChance+((100-bud.parent.splitChance)*0.1)
         o.survivalRate = bud.parent.survivalRate*0.99
         if o.survivalRate < species.branchSurvivalRate then o.survivalRate = species.branchSurvivalRate end 
+        o.maxWidth = bud.parent.maxWidth * 0.9
     else
         o.parent = nil
         o.splitChance = species.knosperChance

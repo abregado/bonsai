@@ -2,7 +2,7 @@ game = {}
 
 function game:enter()
     game.buttons = {}
-    game.buttons.toolbox = button.new(res.w/4*3,res.h/4*3,res.w/8,res.w/8)
+    game.buttons.toolbox = button.new(res.w-(res.w/10)-5,res.h-(res.w/10)-5,res.w/10)
     game.buttons.toolbox.label = "Toolbox"
     --game.buttons.toolbox = button.new(0,0,100,100)
     
@@ -21,18 +21,23 @@ function game:draw()
         --lg.line(b.x,b.y,mx,my)
     end
     
-    lg.setColor(0,255,0)
-    lg.print("Branch Mass: "..tree.mass,0,0)
-    lg.print("Root Mass: "..tree.rootMass,0,15)
-    lg.print("Leaves: "..#tree.leaves,0,30)
-    lg.print("Branches: "..#tree.branches,0,45)
-    lg.print("Buds: "..#tree.buds,0,60)
-    lg.print("Lacking most: "..tree.lack,0,75)
-    lg.print("rootEnergy: "..tree.rootEnergy,0,90)
-    lg.print("leafEnergy: "..tree.leafEnergy,0,105)
-    lg.print("Leaf Area: "..tree.leafArea,0,120)
-    lg.print("Sunlight: "..environment.sunMod,0,135)
+    local lightLevel = environment.sunMod/environment.maxSun*255
+    lg.setBackgroundColor(lightLevel,lightLevel,lightLevel)
     
+    if DEBUG_MODE then
+        lg.setColor(0,255,0)
+        lg.print("Branch Mass: "..tree.mass,0,0)
+        lg.print("Root Mass: "..tree.rootMass,0,15)
+        lg.print("Leaves: "..#tree.leaves,0,30)
+        lg.print("Branches: "..#tree.branches,0,45)
+        lg.print("Buds: "..#tree.buds,0,60)
+        lg.print("Lacking most: "..tree.lack,0,75)
+        lg.print("rootEnergy: "..tree.rootEnergy,0,90)
+        lg.print("leafEnergy: "..tree.leafEnergy,0,105)
+        lg.print("Leaf Area: "..tree.leafArea,0,120)
+        lg.print("Sunlight: "..environment.sunMod,0,135)
+        lg.print("BG Color: "..lightLevel,0,150)
+    end
     game.buttons.toolbox:draw()
     
 end
@@ -43,6 +48,7 @@ function game:update(dt)
         doSeasons(dt)
         tree:grow(dt)
     end
+    
     
    
     --[[if mPos.x == mx and mPos.y == my then

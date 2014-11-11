@@ -9,19 +9,18 @@ local button = {}
 button.font = lg.newFont(30)
 
 local colors = {}
-colors.ready = {160,150,150}
-colors.clicked = {0,255,0}
-colors.hover = {0,0,255}
-colors.bg = {60,60,60}
-colors.font = {30,30,30}
+colors.ready = {100,100,100}
+colors.clicked = {185,0,0}
+colors.hover = {255,255,255}
+colors.bg = {20,20,20}
+colors.font = {200,200,200}
 
 
-function button.new(xin,yin,win,hin)
+function button.new(xin,yin,win)
 	local o = {}
 	o.x = xin
 	o.y = yin
 	o.w = win
-	o.h = hin
 	o.qbase = lg.newQuad(0,0,320,32,320,96)
 	o.qhover = lg.newQuad(0,32,320,32,320,96)
 	o.qclick = lg.newQuad(0,64,320,32,320,96)
@@ -48,8 +47,11 @@ end
 function button:draw()
 	local label = self.label
 	lg.setColor(self.colors.bg)
-    lg.rectangle("fill",self.x,self.y,self.w,self.h)
-    
+    --lg.rectangle("fill",self.x,self.y,self.w,self.h)
+    lg.circle("fill",self.x,self.y,self.w,40)
+    lg.setColor(0,0,0)
+    lg.circle("line",self.x,self.y,self.w,40)
+    lg.circle("fill",self.x,self.y,self.w-10,40)
     local osString = love.system.getOS()
     if self:check() and osString ~= "Android" then
         if lm.isDown("l") then
@@ -60,10 +62,14 @@ function button:draw()
 	else
 		lg.setColor(self.colors.ready)
 	end
-    lg.rectangle("fill",self.x+5,self.y+5,self.w-10,self.h-10)
+    --lg.rectangle("fill",self.x+5,self.y+5,self.w-10,self.h-10)
+    local iconScale = self.w/as.chest:getWidth()*1.25
+    local iconOffset = as.chest:getWidth()*iconScale*0.5
+    lg.draw(as.chest,self.x-iconOffset,self.y-iconOffset,0,iconScale,iconScale)
     lg.setColor(0,0,0,125)
     lg.setLineWidth(2)
-    lg.rectangle("line",self.x+5,self.y+5,self.w-10,self.h-10)
+    --lg.rectangle("line",self.x+5,self.y+5,self.w-10,self.h-10)
+    lg.circle("line",self.x,self.y,self.w-10,40)
     
     lg.setLineWidth(1)
 	lg.setColor(self.colors.font)
@@ -71,7 +77,7 @@ function button:draw()
 	lg.setFont(font)
     local tw = font:getWidth(label)
     local th = font:getHeight(label)
-    lg.print(label,self.x+(self.w/2)-(tw/2),self.y+(self.h/2)-(th/2))
+    --lg.print(label,self.x-(tw/2),self.y-(th/2))
 	
     lg.setFont(fontD)
 	
@@ -79,11 +85,12 @@ end
 
 function button:check()
 	local mx,my = lm.getPosition()
-	if mx >= self.x and mx <=self.x+self.w and my >= self.y and my <= self.y+self.h then
-		return true
-	else
-		return false
-	end
+    local dist = vl.dist(mx,my,self.x,self.y)
+    if dist <= self.w then
+        return true
+    else
+        return false
+    end
 end
 
 return button
