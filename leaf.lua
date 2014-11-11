@@ -38,7 +38,7 @@ end
 function leaf:draw()
     local x = self.parent.ex
     local y = self.parent.ey
-    local r = math.sqrt(self.area)*5
+    local r = math.sqrt(self.area)*8
     lg.setColor(colors.leaf)
     lg.circle("fill",x,y,r,10)
 end

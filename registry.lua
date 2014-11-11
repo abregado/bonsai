@@ -54,4 +54,4 @@ colors.trunk = {85,29,0}
 colors.branch = {128,57,21}
 colors.sprout = {170,95,57}
 colors.selected = {187,0,18}
-colors.leaf = {0,255,0}
+colors.leaf = {0,255,0,125}
