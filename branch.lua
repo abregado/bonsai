@@ -97,7 +97,9 @@ function b:display()
   if self.selected then
     lg.setColor(colors.selected)
   else
-    if self.isTrunk then
+    if selectedB and self.selected == false then
+        lg.setColor(0,0,0)
+    elseif self.isTrunk then
         lg.setColor(colors.trunk)
     elseif self.isGrowing then
         lg.setColor(colors.sprout)
@@ -105,6 +107,7 @@ function b:display()
         lg.setColor(colors.branch)
     end
   end
+  
   lg.line(self.x,self.y,self.ex,self.ey)
   lg.circle("fill",self.x,self.y,self.w/1.5,20)
 end 

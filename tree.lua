@@ -72,6 +72,7 @@ function t.new(x,y)
     o.convertBudstoBranches = t.convertBudstoBranches
     o.growBranches = t.growBranches
     o.untickAll = t.untickAll
+    o.tick = t.tick
     
     return o
 end
@@ -253,9 +254,6 @@ function t:grow(dt)
         if not t.checkFor(v.parent,self.branches) and i > 1 then
             v.isDead = true
         end
-        if v.parent and v.parent.selected then
-            v.selected = true
-        end
     end
     
     for i,v in ipairs(self.leaves) do
@@ -369,6 +367,22 @@ end
 
 function t:getPos()
     return {x=self.x,y=self.y}
+end
+
+function t:tick(tickBranch)
+    selectedB = tickBranch
+    local ind = 1
+    for i,v in ipairs(self.branches) do
+        if v == tickBranch then
+            ind = i
+            v.selected = true
+        end
+    end
+    for i,v in ipairs(self.branches) do
+        if v.parent and v.parent.selected then
+            v.selected = true
+        end
+    end
 end
 
 function t:untickAll()

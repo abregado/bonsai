@@ -122,6 +122,7 @@ function doSeasons(dt)
 end
 
 function game:mousepressed(x,y,button)
+    PAUSE = true
     if button == 'r' then
         tree:untickAll()
         selectedB = nil
@@ -139,8 +140,7 @@ function game:mousepressed(x,y,button)
             local nearest = tree:findBranch(mx,my)
             if nearest then
                 tree:untickAll()
-                selectedB = nearest
-                selectedB.selected = true
+                tree:tick(nearest)
             end
         end
     end
