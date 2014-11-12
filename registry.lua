@@ -16,6 +16,7 @@ gs = require('hump-master/gamestate')
 dataControl = require('dataControl')
 require('serialize')
 
+
 fontD = lg.newFont()
 rawData = {}
 
@@ -30,7 +31,12 @@ state={
     toolbox = require('state_toolbox')
 }
 
-tool = nil
+tools = {
+    view = require('tool'),
+    prune = require('tool_prune')
+}
+
+tool = tools.view
 
 yearTime = 300
 environment = {sunMod=2,state=1,minSun=0.5,maxSun=5}

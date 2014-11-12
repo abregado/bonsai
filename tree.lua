@@ -73,8 +73,18 @@ function t.new(x,y)
     o.growBranches = t.growBranches
     o.untickAll = t.untickAll
     o.tick = t.tick
+    o.drawPot = t.drawPot
     
     return o
+end
+
+function t:drawPot(x,y,color)
+    lg.setColor(color)
+    local pot = {x=x-80,y=y}
+    lg.rectangle("fill",pot.x,pot.y,potW,potH)
+    lg.rectangle("fill",pot.x-20,pot.y,potW+40,potH/5)
+    lg.rectangle("fill",pot.x+10,pot.y+potH,potW/5,potH/10)
+    lg.rectangle("fill",pot.x+potW-60,pot.y+potH,potW/5,potH/10)
 end
 
 function t.addFirstBranch(o,x,y)
@@ -243,6 +253,7 @@ function t:grow(dt)
         if self.rootMass < species.potSize or self.mass < self.rootMass then
             self:growBranches(energy/2,dt)
         else
+            self:growBranches(energy/100,dt)
             self:convertEnergytoBuds(energy/2,dt)
         end
         --TODO: return unused energy, aka if there is nothing to grow
@@ -315,12 +326,7 @@ function t:display()
         end
     end
     
-    lg.setColor(colors.pot)
-    local pot = {x=self.x-Xoff,y=self.y}
-    lg.rectangle("fill",pot.x,pot.y,potW,potH)
-    lg.rectangle("fill",pot.x-20,pot.y,potW+40,potH/5)
-    lg.rectangle("fill",pot.x+10,pot.y+potH,potW/5,potH/10)
-    lg.rectangle("fill",pot.x+potW-60,pot.y+potH,potW/5,potH/10)
+    self:drawPot(self.x,self.y,colors.pot)
     
     
 end

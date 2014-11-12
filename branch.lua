@@ -91,25 +91,23 @@ function b:knosper()
     self.isGrowing = false
 end
 
-function b:display() 
+function b:display(colorOverride) 
 
-  lg.setLineWidth(self.w)
-  if self.selected then
-    lg.setColor(colors.selected)
-  else
-    if selectedB and self.selected == false then
-        lg.setColor(0,0,0)
-    elseif self.isTrunk then
-        lg.setColor(colors.trunk)
-    elseif self.isGrowing then
-        lg.setColor(colors.sprout)
+    lg.setLineWidth(self.w)
+    if colorOverride then
+        lg.setColor(colorOverride)
     else
-        lg.setColor(colors.branch)
+        if self.isTrunk then
+            lg.setColor(colors.trunk)
+        elseif self.isGrowing then
+            lg.setColor(colors.sprout)
+        else
+            lg.setColor(colors.branch)
+        end
     end
-  end
-  
-  lg.line(self.x,self.y,self.ex,self.ey)
-  lg.circle("fill",self.x,self.y,self.w/1.5,20)
+
+    lg.line(self.x,self.y,self.ex,self.ey)
+    lg.circle("fill",self.x,self.y,self.w/1.5,20)
 end 
 
 function b:lengthen(energy)
@@ -141,8 +139,8 @@ function b:grow(energy,dt)
             self:knosper(energy)
         elseif self.isGrowing then
             --increase length
-            self:lengthen(energy/4*3)
-            self:lengthen(energy/4)
+            self:lengthen(energy/40*39)
+            self:widen(energy/40)
         else
             --branch is not growing, but can still get wide
             self:widen(energy)

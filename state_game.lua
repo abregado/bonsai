@@ -18,14 +18,14 @@ function game:enter()
     game.buttons.cancel.icon = as.cancel
     game.buttons.cancel.active = false
     game.buttons.cancel.visible = false
-    game.buttons.cancel.click = function() tool = nil game.setButtons() end
+    game.buttons.cancel.click = function() tool = tools.view game.setButtons() end
     
     game.setButtons()
     
 end
 
 function game.setButtons()
-    if tool then
+    if tool==tools.prune then
         game.buttons.toolbox.active = false
         game.buttons.toolbox.visible = false
         game.buttons.cancel.active = true
@@ -43,20 +43,9 @@ function game:openToolbox()
 end
 
 function game:draw()
-    --lg.setCanvas()
-    --lg.draw(cav,0,0,1,1)
     local mx,my = love.mouse.getPosition()
     
-    tree:display()
-    if hover then
-        local b=hover
-        lg.setColor(colors.selected)
-        lg.setLineWidth(1)
-        --lg.line(b.x,b.y,mx,my)
-    end
-    
-    local lightLevel = environment.sunMod/environment.maxSun*255
-    lg.setBackgroundColor(lightLevel,lightLevel,lightLevel)
+    tool:draw()
     
     if DEBUG_MODE then
         lg.setColor(0,255,0)
@@ -70,11 +59,10 @@ function game:draw()
         lg.print("leafEnergy: "..tree.leafEnergy,0,105)
         lg.print("Leaf Area: "..tree.leafArea,0,120)
         lg.print("Sunlight: "..environment.sunMod,0,135)
-        lg.print("BG Color: "..lightLevel,0,150)
-    end
-    
-    for i,v in ipairs(tree.buds) do
-        v:draw()
+
+        for i,v in ipairs(tree.buds) do
+            v:draw()
+        end
     end
     
     game.buttons.toolbox:draw()

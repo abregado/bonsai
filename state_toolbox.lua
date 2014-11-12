@@ -33,32 +33,32 @@ function toolbox:startLeaving()
 end
 
 function toolbox:saw()
-    tool = 'saw'
+    tool = tools.prune
     toolbox.startLeaving()
 end
 
 function toolbox:prune()
-    tool = 'prune'
+    tool = tools.prune
     toolbox.startLeaving()
 end
 
 function toolbox:repot()
-    tool = 'repot'
+    tool = tools.prune
     toolbox.startLeaving()
 end
 
 function toolbox:pinch()
-    tool = 'pinch'
+    tool = tools.prune
     toolbox.startLeaving()
 end
 
 function toolbox:debud()
-    tool = 'debud'
+    tool = tools.prune
     toolbox.startLeaving()
 end
 
 function toolbox:cancel()
-    tool = nil
+    tool = tools.view
     toolbox.startLeaving()
 end
 
