@@ -6,12 +6,13 @@ species = {
     minBranchLength = 60,
     maxBranchLength = 100,
     bendyness = 2,
-    maxThickness = 50,
+    minThickness = 3,
+    maxThickness = 40,
     budCost = 1,
     leafCost = 2,
     branchCost = 100,
     lengthCost = 0.1,
-    widthCost = 0.5,
+    widthCost = 0.2,
     minLeafArea = 10,
     maxLeafArea = 25,
     leafGrowthCost = 2,
@@ -20,8 +21,13 @@ species = {
     potSize = 20000,
     leafAge = 50,
     knosperChance = 20,
-    branchSurvivalRate = 40
+    branchSurvivalRate = 40,
+    minSun = 2
 }
+
+--TODO: species branch, trunk and leaf colors
+--TODO: species seasonal change functions
+--TODO: species seasonal growth pattern functions
 
 
     
@@ -116,28 +122,12 @@ function t:findEnergy()
     else
         return "leaf energy low", leafEnergy
     end
-    
-    --[[local la = self:totalLeafArea()
-    self.leafArea = la
-    local et = {}
-    et[1] = {name="leafEnergy",total = (la * species.leafEnergy)+100}
-    et[2] = {name="rootEnergy",total = self.rootMass * species.rootEnergy}
-    et[3] = {name="sunEnergy",total = sun}
-    
-    result = {name = "none",total=999999999999}
-    
-    for i,v in ipairs(et) do
-        if v.total < result.total then
-            result = v
-        end
-    end
-    
-    return result.name,result.total]]
+
 end
 
 function t:growLeaves(energy,dt)
     --consumes all energy to grow leaves. If all leaves becomes grown because of this, the energy is wasted
-    if self.leafEnergy < self.rootEnergy then
+    if self.leafEnergy < self.rootEnergy and environment.sunMod > species.minSun then
         local rEnergy = energy - (energy*0.5)
         energy = energy - rEnergy
         local rEnergy = self:convertBudstoLeaves(energy/2,dt)
@@ -146,8 +136,8 @@ function t:growLeaves(energy,dt)
         rEnergy = energy
     end
     
-    if #self.leaves == 0 then
-        rEnergy = self:convertBudstoLeaves(energy,dt)
+    if #self.leaves == 0 and environment.sunMod > species.minSun then
+        rEnergy = self:convertBudstoLeaves(energy,dt,true)
     else 
         local energyPerLeaf = (energy+rEnergy)/#self.leaves
         for i,v in ipairs(self.leaves) do
@@ -169,23 +159,38 @@ function t:growBranches(energy,dt)
     end
 end
 
-function t:convertBudstoLeaves(energy,dt)
+function t:convertBudstoLeaves(energy,dt,override)
     --uses energy to change buds into leaves. Returns the remaining energy.
-    if energy > (species.leafCost*dt) and #self.buds > 0 and #self.leaves < (#self.branches) then
-        print("making a new leaf from bud")
+    if (energy > (species.leafCost*dt) and #self.buds > 0 and #self.leaves < (#self.branches)) or (override and #self.buds>0) then
+        --making a new leaf from bud
         r = math.random(1,#self.buds)
         local chosenBud = self.buds[r]
-        --if chosenBud.parent.isGrowing or chosenBud.parent.isTrunk == false then
+        --TODO: disable leaves growing on trunks unless the segment is on the end
+        if override then
+            local newLeaf = leaf.new(chosenBud)
+            table.insert(self.leaves,newLeaf)
+            table.remove(self.buds,r)
+        elseif chosenBud.parent.isGrowing then
             local newLeaf = leaf.new(chosenBud)
             table.insert(self.leaves,newLeaf)
             table.remove(self.buds,r)
             energy = energy - (species.leafCost*dt)
-        --end
+        elseif chosenBud.parent.parent and chosenBud.parent.parent.isTrunk == false then
+            local newLeaf = leaf.new(chosenBud)
+            table.insert(self.leaves,newLeaf)
+            table.remove(self.buds,r)
+            energy = energy - (species.leafCost*dt)
+        else
+            local newLeaf = leaf.new(chosenBud)
+            table.insert(self.leaves,newLeaf)
+            table.remove(self.buds,r)
+            energy = energy - (species.leafCost*dt)
+        end
     elseif #self.buds == 0 then
-        print("no buds to make into leaves")
+        --no buds to make into leaves
         energy = self:convertEnergytoBuds(energy,dt)
     else
-        print("not enough energy for a leaf"..energy)
+        --not enough energy for a leaf
     end
     return energy
 end
@@ -193,14 +198,14 @@ end
 function t:convertEnergytoBuds(energy,dt)
     --uses energy to create new buds. Returns the remaining energy.
     if energy > (species.budCost*dt) and #self.buds < (#self.branches+#self.leaves) then
-        print("making a new bud")
+        --making a new bud
         local r = math.random(1,#self.branches)
         local chosenBranch = self.branches[r]
         local newBud = bud.new(chosenBranch)
         table.insert(self.buds, newBud)
         energy = energy - (species.budCost*dt)
     else
-        print("not enough energy for a new bud")
+        --not enough energy for a new bud
     end
     return energy
 end
@@ -230,7 +235,7 @@ function t:grow(dt)
     self.lack = lack
     energy = energy * dt
     
-    if energy > 0 then
+    if energy > 0 then --TODO: add condition to only grow when the season is correct (sunlight is above potential energy)
         local leafGrowth = energy*0.8
         local branchGrowth = energy - leafGrowth
         leafGrowth = self:growLeaves(energy/2,dt)
@@ -239,7 +244,10 @@ function t:grow(dt)
         else
             self:convertEnergytoBuds(energy/2,dt)
         end
+        --TODO: return unused energy, aka if there is nothing to grow
     end
+    
+    --TODO: Check for unused energy. grow fruit, which is very expensive to begin, and soaks up a lot of energy
     
     for i,v in ipairs(self.branches) do
         if not t.checkFor(v.parent,self.branches) and i > 1 then

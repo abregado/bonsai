@@ -19,16 +19,22 @@ require('serialize')
 fontD = lg.newFont()
 rawData = {}
 
---gamestates
-state={
-    game = require('state_game')
-}
-
 screen={w=lg.getWidth(),h=lg.getHeight()}
 res = screen
-yearTime = 600
-environment = {sunMod=1,state=1,minSun=3,maxSun=10}
-sunTween = tw.new(yearTime,environment,{sunMod=environment.maxSun},'linear')
+
+buttonWidth = res.w/10
+
+--gamestates
+state={
+    game = require('state_game'),
+    toolbox = require('state_toolbox')
+}
+
+tool = nil
+
+yearTime = 300
+environment = {sunMod=2,state=1,minSun=0.5,maxSun=5}
+sunTween = tw.new(yearTime/2,environment,{sunMod=environment.maxSun},'linear')
 id=0
 
 bsort={}
@@ -48,12 +54,20 @@ mTime=0
 mPos={x=0,y=0}
 r=math.random()
 
+
+
 as = {}
 as.saw = lg.newImage("assets/hand-saw.png")
 as.scissors = lg.newImage("assets/scissors.png")
 as.chest = lg.newImage("assets/locked-chest.png")
 as.nuke = lg.newImage("assets/mass-driver.png")
 as.tick = lg.newImage("assets/tick.png")
+as.cancel = lg.newImage("assets/cancel.png")
+as.back = lg.newImage("assets/back-arrow.png")
+as.repot = lg.newImage("assets/repot.png")
+as.leaf = lg.newImage("assets/falling-leaf.png")
+as.time = lg.newImage("assets/sands-of-time.png")
+as.buds = lg.newImage("assets/buds.png")
 
 total = 0 
 tips={}
@@ -63,6 +77,8 @@ colors={}
 colors.trunk = {85,29,0}
 colors.branch = {128,57,21}
 colors.sprout = {170,95,57}
+colors.bud = {255,0,0}
 colors.selected = {187,0,18}
 colors.leaf = {0,255,0,125}
 colors.pot = {0,125,250}
+colors.toolboxBG = {90,90,90}

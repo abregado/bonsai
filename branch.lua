@@ -15,12 +15,16 @@ function b.new(bud)
         o.splitChance = bud.parent.splitChance+((100-bud.parent.splitChance)*0.1)
         o.survivalRate = bud.parent.survivalRate*0.99
         if o.survivalRate < species.branchSurvivalRate then o.survivalRate = species.branchSurvivalRate end 
-        o.maxWidth = bud.parent.maxWidth * 0.9
+        o.maxWidth = bud.parent.maxWidth * 0.8
+        
     else
         o.parent = nil
+        o.maxWidth = species.maxThickness
         o.splitChance = species.knosperChance
         o.survivalRate = 105
     end
+    
+    if o.maxWidth < species.minThickness then o.maxWidth = species.minThickness end
     o.w=1 
     o.x=bud.ex
     o.y=bud.ey
@@ -115,6 +119,9 @@ end
 function b:widen(energy)
     if self.w < self.maxWidth then
         local extraWidth = energy/self.mass/species.widthCost
+        if self.isTrunk then
+            extraWidth = extraWidth *3
+        end
         self.w = self.w + extraWidth
         local newMass = extraWidth*self.l
         self.tree:addRootMass(newMass)
@@ -131,7 +138,8 @@ function b:grow(energy,dt)
             self:knosper(energy)
         elseif self.isGrowing then
             --increase length
-            self:lengthen(energy)
+            self:lengthen(energy/4*3)
+            self:lengthen(energy/4)
         else
             --branch is not growing, but can still get wide
             self:widen(energy)

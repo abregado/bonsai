@@ -12,6 +12,8 @@ function bud.new(parent,freeRot)
         o.y=parent.ey
         o.ex=o.x 
         o.ey=o.y
+        o.ax = o.x + math.random(-1,1)*math.random()*10
+        o.ay = o.y + math.random(-1,1)*math.random()*10
             
         --[[r = math.random(-1,1)/2
         if r<0 then
@@ -45,6 +47,13 @@ function bud.clear(o)
   o.id=id
   id=id+1
   
+  o.draw = bud.draw
+  
+end
+
+function bud:draw()
+    lg.setColor(colors.bud)
+    lg.circle("fill",self.ax,self.ay,5,5)
 end
 
 return bud
