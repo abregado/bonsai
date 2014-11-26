@@ -64,6 +64,7 @@ function t.new(x,y)
     o.addRootMass = t.addRootMass
     o.findEnergy = t.findEnergy
     o.findBranch = t.findBranch
+    o.findBranchEnd = t.findBranchEnd
     o.totalLeafArea = t.totalLeafArea
     o.convertBudtoBranch = t.convertBudtoBranch
     o.growLeaves = t.growLeaves
@@ -212,9 +213,11 @@ function t:convertEnergytoBuds(energy,dt)
         --making a new bud
         local r = math.random(1,#self.branches)
         local chosenBranch = self.branches[r]
-        local newBud = bud.new(chosenBranch)
-        table.insert(self.buds, newBud)
-        energy = energy - (species.budCost*dt)
+        if chosenBranch.canBud then
+            local newBud = bud.new(chosenBranch)
+            table.insert(self.buds, newBud)
+            energy = energy - (species.budCost*dt)
+        end
     else
         --not enough energy for a new bud
     end
@@ -404,7 +407,27 @@ function t:findBranch(x,y,exc)
     for i,v in ipairs(self.branches) do
         local vDist = vl.dist(v.x,v.y,x,y)
         if vDist <= dist then
-            if v==selectedB then
+            if v==selectedB or v.isDead then
+                --this is the selected one so do nothing
+            else
+                close = v
+                dist = vDist
+            end
+        end
+    end
+        
+    
+    return close
+end
+
+function t:findBranchEnd(x,y,exc)
+
+    local dist= 9999999999
+    local close = nil
+    for i,v in ipairs(self.branches) do
+        local vDist = vl.dist(v.ex,v.ey,x,y)
+        if vDist <= dist then
+            if v==selectedB or v.isDead then
                 --this is the selected one so do nothing
             else
                 close = v

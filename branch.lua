@@ -8,6 +8,8 @@ function b.new(bud)
     --variables 
     b.clear(o)
     
+    o.canBud = true
+    
     o.isBranch = true
     o.tree = bud.tree
     if bud.parent then
@@ -65,7 +67,7 @@ function b.clear(o)
   
 end
 
-function b:knosper() 
+function b:knosper(override) 
     -- this segment is finished growing. 
     -- random chance to finish growing
     -- if continuing, always spawn one new branch segment
@@ -77,7 +79,7 @@ function b:knosper()
         nb.isTrunk = self.isTrunk
         table.insert(self.tree.branches,nb)
         rp = math.random()*100
-        if rp < self.splitChance then
+        if rp < self.splitChance or override then
             nb = branch.new(bud.new(self,true))
             table.insert(self.tree.branches,nb)
         else
@@ -92,22 +94,23 @@ function b:knosper()
 end
 
 function b:display(colorOverride) 
-
-    lg.setLineWidth(self.w)
-    if colorOverride then
-        lg.setColor(colorOverride)
-    else
-        if self.isTrunk then
-            lg.setColor(colors.trunk)
-        elseif self.isGrowing then
-            lg.setColor(colors.sprout)
+    if not self.isDead then
+        lg.setLineWidth(self.w)
+        if colorOverride then
+            lg.setColor(colorOverride)
         else
-            lg.setColor(colors.branch)
+            if self.isTrunk then
+                lg.setColor(colors.trunk)
+            elseif self.isGrowing then
+                lg.setColor(colors.sprout)
+            else
+                lg.setColor(colors.branch)
+            end
         end
-    end
 
-    lg.line(self.x,self.y,self.ex,self.ey)
-    lg.circle("fill",self.x,self.y,self.w/1.5,20)
+        lg.line(self.x,self.y,self.ex,self.ey)
+        lg.circle("fill",self.x,self.y,self.w/1.5,20)
+    end
 end 
 
 function b:lengthen(energy)

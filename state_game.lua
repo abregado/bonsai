@@ -37,11 +37,23 @@ function game:draw()
 end
 
 function game:update(dt)
-    dt = dt*2
+    dt = dt*5
+    if storedTime > dt then
+        doSeasons(dt)
+        tree:grow(dt)
+        storedTime = storedTime -dt
+    elseif storedTime > 0 then
+        doSeasons(storedTime)
+        tree:grow(storedTime)
+        storedTime = 0
+    end
+    
+    
+    --[[dt = dt*2
     if not PAUSE then
         doSeasons(dt)
         tree:grow(dt)
-    end
+    end]]
     
     
    
@@ -87,7 +99,7 @@ function game:mousepressed(x,y,button)
         
         if not uiInteraction then
             currentTool:tick(x,y)
-            sfx.blip:play()
+            --sfx.blip:play()
         end
     end
 end

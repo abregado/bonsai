@@ -4,11 +4,12 @@ local tool = {}
 local colors = {
     selected = {60,155,60},
     unselected = {0,0,0},
-    background = {255,255,255}
+    branches = {255,255,255},
+    background = {200,200,255}
 }
 
 function tool.init()
-    print("prune tool init")
+    print("debud tool init")
     o = toolClass.new()
     o.buttons.cancel = button.new(buttonWidth,res.w-(res.w/10)-5,res.h-(res.w/10)-5)
     o.buttons.cancel.label = "Cancel"
@@ -31,17 +32,18 @@ end
 
 function tool:act()
     if selectedB then
-        if selectedB.parent then
-            selectedB.parent:knosper(true)
-            selectedB.isDead = true
+        for i,v in ipairs(tree.buds) do
+            if v.selected then
+                v.isDead = true
+            end
         end
-        tools.prune:untick()
+        selectedB.canBud = false
     end
 end
 
 function tool.cancel()
     if selectedB then
-        tools.prune:untick()
+        tools.debud:untick()
     else
         currentTool = tools.view
     end
@@ -52,14 +54,18 @@ function tool:draw()
     
     lg.setBackgroundColor(colors.background)
     for i,v in ipairs(tree.branches) do
-        if v.selected then
-            v:display(colors.selected)
-        else
-            v:display(colors.unselected)
-        end
+            v:display(colors.branches)
     end
     
-    tree:drawPot(tree.x,tree.y,colors.unselected)
+    tree:drawPot(tree.x,tree.y,colors.branches)
+    
+    for i,v in ipairs(tree.buds) do
+        if v.selected then
+            v:draw(colors.selected)
+        else
+            v:draw(colors.unselected)
+        end
+    end
     
     if storedTime == 0 then
         for i,v in pairs(self.buttons) do
@@ -71,10 +77,15 @@ end
 function tool:update(dt) end
 
 function tool:tick(mx,my) 
-    local nearest = tree:findBranch(mx,my)
+    local nearest = tree:findBranchEnd(mx,my)
     if nearest then
         tree:untickAll()
         tree:tick(nearest)
+        for i,v in ipairs(tree.buds) do
+            if v.parent == nearest then
+                v.selected = not v.selected
+            end
+        end
         self.buttons.confirm.visible = true
         self.buttons.confirm.active = true
     end

@@ -2,13 +2,13 @@ local toolClass = require('tool')
 local tool = {}
 
 local colors = {
-    selected = {60,155,60},
+    selected = {255,0,0},
     unselected = {0,0,0},
     background = {255,255,255}
 }
 
 function tool.init()
-    print("prune tool init")
+    print("saw tool init")
     o = toolClass.new()
     o.buttons.cancel = button.new(buttonWidth,res.w-(res.w/10)-5,res.h-(res.w/10)-5)
     o.buttons.cancel.label = "Cancel"
@@ -31,17 +31,14 @@ end
 
 function tool:act()
     if selectedB then
-        if selectedB.parent then
-            selectedB.parent:knosper(true)
-            selectedB.isDead = true
-        end
-        tools.prune:untick()
+        selectedB.isDead = true
+        tools.saw:untick()
     end
 end
 
 function tool.cancel()
     if selectedB then
-        tools.prune:untick()
+        tools.saw:untick()
     else
         currentTool = tools.view
     end

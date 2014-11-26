@@ -1,4 +1,4 @@
-DEBUG_MODE = true
+DEBUG_MODE = false
 
 if DEBUG_MODE then
     require('lovedebug')
@@ -18,7 +18,10 @@ dataControl = require('dataControl')
 require('serialize')
 viewTool = require('tool_view')
 pruneTool = require('tool_prune')
+sawTool = require('tool_saw')
+debudTool = require('tool_debud')
 
+storedTime = 0
 
 fontD = lg.newFont()
 rawData = {}
@@ -93,6 +96,8 @@ colors.toolboxBG = {90,90,90}
 
 tools = {
     view = viewTool.init(),
+    saw = sawTool.init(),
+    debud = debudTool.init(),
     prune = pruneTool.init()
 }
 

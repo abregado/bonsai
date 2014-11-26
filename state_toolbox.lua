@@ -33,7 +33,7 @@ function toolbox:startLeaving()
 end
 
 function toolbox:saw()
-    currentTool = tools.prune
+    currentTool = tools.saw
     toolbox.startLeaving()
 end
 
@@ -53,7 +53,7 @@ function toolbox:pinch()
 end
 
 function toolbox:debud()
-    currentTool = tools.prune
+    currentTool = tools.debud
     toolbox.startLeaving()
 end
 
@@ -80,9 +80,11 @@ function toolbox:enter(from)
     toolbox.buttons[3] = button.new(buttonWidth)
     toolbox.buttons[3].icon = as.repot
     toolbox.buttons[3].click = toolbox.repot
+    toolbox.buttons[3].visible = false
     toolbox.buttons[4] = button.new(buttonWidth)
     toolbox.buttons[4].icon = as.leaf
     toolbox.buttons[4].click = toolbox.pinch
+    toolbox.buttons[4].visible = false
     toolbox.buttons[5] = button.new(buttonWidth)
     toolbox.buttons[5].icon = as.buds
     toolbox.buttons[5].click = toolbox.debud
@@ -93,17 +95,20 @@ end
 
 function toolbox:draw()
     local mx,my = love.mouse.getPosition()
-    self.from:draw()
+    tree:display()
 
     
     --draw overlay
     lg.setColor(colors.toolboxBG)
     lg.rectangle("fill",toolbox.boxOff-res.w,yStep,res.w,yStep)
     
+    
     for i,v in ipairs(butPositions) do
         toolbox.buttons[i]:draw(v.x+toolbox.xOff,v.y)
-        lg.setColor(255,0,0)
-        lg.circle("fill",v.x+toolbox.xOff,v.y,10,20)
+        if DEBUG_MODE == true then
+            lg.setColor(255,0,0)
+            lg.circle("fill",v.x+toolbox.xOff,v.y,10,20)
+        end
     end
     
     --draw buttons

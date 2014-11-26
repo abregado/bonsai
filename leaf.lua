@@ -8,6 +8,7 @@ function leaf.new(bud)
     o.isGrowing = true
     o.isLeaf = true
     o.parent = bud.parent 
+    o.ang = math.random()*math.pi*2
     o.age = 0
     
     o.grow = leaf.grow
@@ -41,9 +42,29 @@ end
 function leaf:draw()
     local x = self.parent.ex
     local y = self.parent.ey
+    local sproutLen = self.area*2
+    local leafX,leafY = vl.rotate(self.ang,sproutLen,0)
+    leafX = leafX + x
+    leafY = leafY + y
+    local leafTX,leafTY = vl.rotate(self.ang,sproutLen*3,0)
+    leafTX = leafTX + x
+    leafTY = leafTY + y
+    local leafTX1,leafTY1 = vl.rotate(self.ang,sproutLen*2,sproutLen/2)
+    leafTX1 = leafTX1 + x
+    leafTY1 = leafTY1 + y
+    local leafTX2,leafTY2 = vl.rotate(self.ang,sproutLen*2,sproutLen/-2)
+    leafTX2 = leafTX2 + x
+    leafTY2 = leafTY2 + y
+    
+    
     local r = math.sqrt(self.area)*8
+    
+    lg.setLineWidth(1)
+    lg.setColor(colors.sprout)
+    lg.line(x,y,leafX,leafY)
     lg.setColor(colors.leaf)
-    lg.circle("fill",x,y,r,10) --TODO: generator for leaf polygon shape
+    lg.polygon("fill",leafX,leafY,leafTX1,leafTY1,leafTX,leafTY,leafTX2,leafTY2)
+    --lg.circle("fill",leafX,leafY,r,10) --TODO: generator for leaf polygon shape
 end
 
 function leaf:drop()

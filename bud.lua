@@ -51,8 +51,12 @@ function bud.clear(o)
   
 end
 
-function bud:draw()
-    lg.setColor(colors.bud)
+function bud:draw(override)
+    if override then
+        lg.setColor(override)
+    else
+        lg.setColor(colors.bud)
+    end
     lg.circle("fill",self.ax,self.ay,5,5)
 end
 
