@@ -1,10 +1,11 @@
-DEBUG_MODE = false
+DEBUG_MODE = true
 
 if DEBUG_MODE then
     require('lovedebug')
 end
 
 lg=love.graphics
+la = love.audio
 vl=require('hump-master/vector-light')
 tw=require('tween')
 branch = require('branch')
@@ -15,6 +16,8 @@ button = require('button')
 gs = require('hump-master/gamestate')
 dataControl = require('dataControl')
 require('serialize')
+viewTool = require('tool_view')
+pruneTool = require('tool_prune')
 
 
 fontD = lg.newFont()
@@ -31,12 +34,7 @@ state={
     toolbox = require('state_toolbox')
 }
 
-tools = {
-    view = require('tool'),
-    prune = require('tool_prune')
-}
 
-tool = tools.view
 
 yearTime = 300
 environment = {sunMod=2,state=1,minSun=0.5,maxSun=5}
@@ -75,6 +73,10 @@ as.leaf = lg.newImage("assets/falling-leaf.png")
 as.time = lg.newImage("assets/sands-of-time.png")
 as.buds = lg.newImage("assets/buds.png")
 
+sfx = {}
+sfx.blip = la.newSource("assets/coin.wav","static")
+la.setVolume(0.25)
+
 total = 0 
 tips={}
 cav = lg.newCanvas()
@@ -88,3 +90,10 @@ colors.selected = {187,0,18}
 colors.leaf = {0,255,0,125}
 colors.pot = {0,125,250}
 colors.toolboxBG = {90,90,90}
+
+tools = {
+    view = viewTool.init(),
+    prune = pruneTool.init()
+}
+
+currentTool = tools.view

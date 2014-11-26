@@ -7,18 +7,17 @@ function tool.new()
     o.tick = tool.tick
     o.act = tool.act
     o.untick = tool.untick
+    o.init = tool.init
     o.mousepressed = tool.mousepressed
     o.mousereleased = tool.mousereleased
     o.keypressed = tool.keypressed
-    
+    o.buttons = {}
+
     return o
 end
 
-function tool:draw() 
-    tree:display()
-    local lightLevel = environment.sunMod/environment.maxSun*255
-    lg.setBackgroundColor(lightLevel,lightLevel,lightLevel)
-end
+function tool:init() print("blank tool init") end
+function tool:draw() end
 function tool:act() end
 function tool:update(dt) end
 function tool:tick() end

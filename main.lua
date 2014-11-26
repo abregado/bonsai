@@ -1,6 +1,7 @@
 require('registry')
 
 function love.load()
+    initTools()
     treeReset()    
     --dataControl.load()
     gs.registerEvents()
@@ -10,10 +11,19 @@ end
 function treeReset()
     math.randomseed(os.time()) 
     tree=t.new(screen.w/2,screen.h-100)
+    for i=0,10000 do
+        tree:grow(.2)
+    end
 end
 
 function love.quit()
     --dataControl.save()
+end
+
+function initTools()
+    for i,v in ipairs(tools) do
+        v:init()
+    end
 end
 
 

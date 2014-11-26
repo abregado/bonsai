@@ -1,42 +1,9 @@
 game = {}
 
 function game:enter()
-    game.buttons = {}
-    game.buttons.toolbox = button.new(buttonWidth,res.w-(res.w/10)-5,res.h-(res.w/10)-5)
-    game.buttons.toolbox.label = "Toolbox"
-    game.buttons.toolbox.icon = as.chest
-    game.buttons.toolbox.active = true
-    game.buttons.toolbox.click = function() gs.switch(state.toolbox) end
-    game.buttons.time = button.new(buttonWidth,(res.w/10)+5,res.h-(res.w/10)-5)
-    game.buttons.time.label = "Time"
-    game.buttons.time.icon = as.time
-    game.buttons.time.active = true
-    game.buttons.time.click = function() PAUSE = not PAUSE end
-    game.buttons.time.extraCode = function() if PAUSE then game.buttons.time.colors.ready = {255,0,0} else game.buttons.time.colors.ready = {100,100,100} end end
-    game.buttons.cancel = button.new(buttonWidth,res.w-(res.w/10)-5,res.h-(res.w/10)-5)
-    game.buttons.cancel.label = "Cancel"
-    game.buttons.cancel.icon = as.cancel
-    game.buttons.cancel.active = false
-    game.buttons.cancel.visible = false
-    game.buttons.cancel.click = function() tool = tools.view game.setButtons() end
-    
-    game.setButtons()
     
 end
 
-function game.setButtons()
-    if tool==tools.prune then
-        game.buttons.toolbox.active = false
-        game.buttons.toolbox.visible = false
-        game.buttons.cancel.active = true
-        game.buttons.cancel.visible = true
-    else
-        game.buttons.toolbox.active = true
-        game.buttons.toolbox.visible = true
-        game.buttons.cancel.active = false
-        game.buttons.cancel.visible = false
-    end
-end
 
 function game:openToolbox()
     gs.switch(state.toolbox)
@@ -45,7 +12,7 @@ end
 function game:draw()
     local mx,my = love.mouse.getPosition()
     
-    tool:draw()
+    currentTool:draw()
     
     if DEBUG_MODE then
         lg.setColor(0,255,0)
@@ -65,9 +32,7 @@ function game:draw()
         end
     end
     
-    game.buttons.toolbox:draw()
-    game.buttons.time:draw()
-    game.buttons.cancel:draw()
+
     
 end
 
@@ -110,26 +75,19 @@ function doSeasons(dt)
 end
 
 function game:mousepressed(x,y,button)
-    PAUSE = true
-    if button == 'r' then
-        tree:untickAll()
-        selectedB = nil
-    elseif button == 'l' then
+    if button == 'l' then
         local uiInteraction = false
-        for i,v in pairs(game.buttons) do
+        for i,v in pairs(currentTool.buttons) do
             if v:check() and v.active then
                 uiInteraction = true
                 game.pressed = true
+                
             end
         end
         
-        if not uiInteraction then               
-            local mx,my = love.mouse.getPosition()
-            local nearest = tree:findBranch(mx,my)
-            if nearest then
-                tree:untickAll()
-                tree:tick(nearest)
-            end
+        if not uiInteraction then
+            currentTool:tick(x,y)
+            sfx.blip:play()
         end
     end
 end
@@ -137,7 +95,7 @@ end
 function game:mousereleased(x,y,button)
     if button == 'l' and game.pressed then
         local uiInteraction = false
-        for i,v in pairs(game.buttons) do
+        for i,v in pairs(currentTool.buttons) do
             if v:check() and v.active then
                 v:click()
                 break
