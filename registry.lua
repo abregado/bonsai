@@ -78,7 +78,13 @@ as.buds = lg.newImage("assets/buds.png")
 
 sfx = {}
 sfx.blip = la.newSource("assets/coin.wav","static")
+
+music = la.newSource("assets/music.ogg")
+music:setLooping(true)
+
 la.setVolume(0.25)
+
+
 
 total = 0 
 tips={}

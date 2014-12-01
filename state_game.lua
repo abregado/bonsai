@@ -1,7 +1,11 @@
 game = {}
 
 function game:enter()
-    
+    music:play()
+end
+
+function game:leave()
+    music:pause()
 end
 
 
