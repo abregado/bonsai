@@ -11,7 +11,7 @@ end
 function treeReset()
     math.randomseed(os.time()) 
     tree=t.new(screen.w/2,screen.h-100)
-    for i=0,10000 do
+    for i=0,100 do
         tree:grow(.2)
     end
 end

@@ -42,17 +42,18 @@ end
 function leaf:draw()
     local x = self.parent.ex
     local y = self.parent.ey
-    local sproutLen = self.area*2
+    local sproutLen = self.area/2
+    local leafLen = self.area
     local leafX,leafY = vl.rotate(self.ang,sproutLen,0)
     leafX = leafX + x
     leafY = leafY + y
-    local leafTX,leafTY = vl.rotate(self.ang,sproutLen*3,0)
+    local leafTX,leafTY = vl.rotate(self.ang,leafLen*3,0)
     leafTX = leafTX + x
     leafTY = leafTY + y
-    local leafTX1,leafTY1 = vl.rotate(self.ang,sproutLen*2,sproutLen/2)
+    local leafTX1,leafTY1 = vl.rotate(self.ang,leafLen*2,leafLen/2)
     leafTX1 = leafTX1 + x
     leafTY1 = leafTY1 + y
-    local leafTX2,leafTY2 = vl.rotate(self.ang,sproutLen*2,sproutLen/-2)
+    local leafTX2,leafTY2 = vl.rotate(self.ang,leafLen*2,leafLen/-2)
     leafTX2 = leafTX2 + x
     leafTY2 = leafTY2 + y
     

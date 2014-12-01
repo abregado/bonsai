@@ -114,7 +114,7 @@ function b:display(colorOverride)
 end 
 
 function b:lengthen(energy)
-    local extraLength = energy/self.mass/species.lengthCost
+    local extraLength = energy/(self.mass+10)/species.lengthCost
     self.l = self.l + extraLength
     local newMass = extraLength*self.w
     self.tree:addRootMass(newMass)

@@ -40,8 +40,9 @@ state={
 
 
 yearTime = 300
-environment = {sunMod=2,state=1,minSun=0.5,maxSun=5}
-sunTween = tw.new(yearTime/2,environment,{sunMod=environment.maxSun},'linear')
+environment = {sunMod=0.5,state=1,minSun=0.5,maxSun=5}
+sunTween = tw.new(yearTime,environment,{sunMod=environment.maxSun},'linear')
+sunTween:set(yearTime/2)
 id=0
 
 bsort={}
@@ -82,7 +83,7 @@ sfx.blip = la.newSource("assets/coin.wav","static")
 music = la.newSource("assets/music.ogg")
 music:setLooping(true)
 
-la.setVolume(0.25)
+la.setVolume(0.1)
 
 
 
