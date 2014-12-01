@@ -3,7 +3,7 @@ local t={}
 local massCost = 20
 
 species = {
-    minBranchLength = 60,
+    minBranchLength = 40,
     maxBranchLength = 100,
     bendyness = 2,
     minThickness = 3,
@@ -11,8 +11,8 @@ species = {
     budCost = 1,
     leafCost = 2,
     branchCost = 100,
-    lengthCost = 0.1,
-    widthCost = 0.2,
+    lengthCost = 0.5,
+    widthCost = 3,
     minLeafArea = 10,
     maxLeafArea = 25,
     leafGrowthCost = 2,
@@ -20,8 +20,8 @@ species = {
     rootEnergy = 1,
     potSize = 20000,
     leafAge = 150,
-    knosperChance = 20,
-    branchSurvivalRate = 40,
+    knosperChance = 5,
+    branchSurvivalRate = 30,
     minSun = 2
 }
 
