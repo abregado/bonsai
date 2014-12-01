@@ -8,7 +8,8 @@ function leaf.new(bud)
     o.isGrowing = true
     o.isLeaf = true
     o.parent = bud.parent 
-    o.ang = math.random()*math.pi*2
+    --o.ang =( math.random()*math.pi/4)+bud.parent.ang
+    o.ang =bud.ang+(math.random()*math.pi)
     o.age = 0
     
     o.grow = leaf.grow

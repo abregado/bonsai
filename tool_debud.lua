@@ -21,7 +21,7 @@ function tool.init()
     o.buttons.confirm.icon = as.tick
     o.buttons.confirm.active = false
     o.buttons.confirm.visible = false
-    o.buttons.confirm.click = tool.act
+    o.buttons.confirm.click = function() tool.act(tools.debud) end
     
     o.draw = tool.draw
     o.tick = tool.tick
@@ -39,6 +39,7 @@ function tool:act()
         end
         selectedB.canBud = false
     end
+    self:untick()
 end
 
 function tool.cancel()
@@ -60,10 +61,12 @@ function tool:draw()
     tree:drawPot(tree.x,tree.y,colors.branches)
     
     for i,v in ipairs(tree.buds) do
-        if v.selected then
-            v:draw(colors.selected)
-        else
-            v:draw(colors.unselected)
+        if not v.isDead then
+            if v.selected then
+                v:draw(colors.selected)
+            else
+                v:draw(colors.unselected)
+            end
         end
     end
     
@@ -82,7 +85,7 @@ function tool:tick(mx,my)
         tree:untickAll()
         tree:tick(nearest)
         for i,v in ipairs(tree.buds) do
-            if v.parent == nearest then
+            if v.parent == nearest and not v.isDead then
                 v.selected = not v.selected
             end
         end
