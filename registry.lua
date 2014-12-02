@@ -1,4 +1,4 @@
-DEBUG_MODE = false
+DEBUG_MODE = true
 
 if DEBUG_MODE then
     require('lovedebug')
@@ -25,6 +25,8 @@ storedTime = 0
 
 fontD = lg.newFont()
 rawData = {}
+rawData.saved = "empty saved"
+rawData.loaded = "empty loaded"
 
 screen={w=lg.getWidth(),h=lg.getHeight()}
 res = screen

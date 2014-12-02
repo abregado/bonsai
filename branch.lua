@@ -8,9 +8,6 @@ function b.new(bud)
     --variables 
     b.clear(o)
     
-    o.canBud = true
-    
-    o.isBranch = true
     o.tree = bud.tree
     if bud.parent then
         o.parent = bud.parent
@@ -41,9 +38,41 @@ function b.new(bud)
     return o 
 end 
 
+function b.import(import) 
+    local o={} 
+    --variables 
+    b.clear(o)
+    o.tree = tree
+    o.parent = nil
+    
+    o.x = tonumber(import.x)
+    o.y = tonumber(import.y)
+    o.w = tonumber(import.w)
+    o.l = tonumber(import.l)
+    o.ang = tonumber(import.ang)
+    o.maxWidth = tonumber(import.maxWidth)
+    o.isGrowing = tobool(import.isGrowing)
+    o.splitChance = tonumber(import.splitChance)
+    o.survivalRate = tonumber(import.survivalRate)
+    o.isFirst = tobool(import.isFirst)
+    o.isTrunk = tobool(import.isTrunk)
+
+    o.mass = o.w*o.l
+    
+    local s= math.sin(o.ang)*o.l 
+    local a= math.cos(o.ang)*o.l 
+    o.ex=o.x+a
+    o.ey=o.y-s
+
+    return o 
+end 
+
 function b.clear(o)
   o.mass=3 
-  o.isGrowing=true 
+  o.canBud = true
+  o.isBranch = true
+  o.isGrowing=true
+  o.isBranch = true 
   o.age=0 
   o.w=3 
   o.x=0 

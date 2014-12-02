@@ -11,9 +11,21 @@ end
 function treeReset()
     math.randomseed(os.time()) 
     tree=t.new(screen.w/2,screen.h-100)
-    for i=0,100 do
+    for i=0,1000 do
         tree:grow(.2)
     end
+end
+
+function treeLoad()
+    treeReset()
+    tree.leaves = {}
+    tree.buds = {}
+    tree.branches = {}
+    dataControl.load()
+end
+
+function treeSave()
+    dataControl.save()
 end
 
 function love.quit()
@@ -26,6 +38,9 @@ function initTools()
     end
 end
 
+function tobool(v)
+    return v and ( (type(v)=="number") and (v==1) or ( (type(v)=="string") and (v=="true") ) )
+end
 
 --load/save on restart
 --button to grow a new tree

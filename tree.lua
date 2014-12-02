@@ -96,6 +96,8 @@ function t.addFirstBranch(o,x,y)
     o.branches[1].x=x
     o.branches[1].y=y
     o.branches[1].isTrunk=true
+    o.branches[1].isFirst=true
+    
     local newBud = bud.new(o.branches[1])
     --local newLeaf = leaf.new(bud.new(o.branches[1]))
     --table.insert(o.leaves,leaf.new(newBud))
@@ -200,7 +202,7 @@ function t:convertBudstoLeaves(energy,dt,override)
         end
     elseif #self.buds == 0 then
         --no buds to make into leaves
-        energy = self:convertEnergytoBuds(energy,dt)
+        energy = self:convertEnergytoBuds(energy/4,dt)
     else
         --not enough energy for a leaf
     end
@@ -256,8 +258,8 @@ function t:grow(dt)
         if self.rootMass < species.potSize or self.mass < self.rootMass then
             self:growBranches(energy/2,dt)
         else
-            self:growBranches(energy/100,dt)
-            self:convertEnergytoBuds(energy/2,dt)
+            self:growBranches(energy,dt)
+            --self:convertEnergytoBuds(energy/2,dt)
         end
         --TODO: return unused energy, aka if there is nothing to grow
     end
@@ -319,8 +321,9 @@ function t:untick()
 end
 
 function t:display()
+
     for i,v in ipairs(self.branches) do
-        v:display(energy,dt)
+        v:display()
     end
     
     if not selectedB then
@@ -329,9 +332,8 @@ function t:display()
         end
     end
     
-    self:drawPot(self.x,self.y,colors.pot)
-    
-    
+    self:drawPot(self.x,self.y,colors.pot)   
+
 end
 
 function t:report()
@@ -421,23 +423,24 @@ function t:findBranch(x,y,exc)
 end
 
 function t:findBranchEnd(x,y,exc)
-
-    local dist= 9999999999
-    local close = nil
-    for i,v in ipairs(self.branches) do
-        local vDist = vl.dist(v.ex,v.ey,x,y)
-        if vDist <= dist then
-            if v==selectedB or v.isDead then
-                --this is the selected one so do nothing
-            else
-                close = v
-                dist = vDist
+    if self.branches then
+        local dist= 9999999999
+        local close = nil
+        for i,v in ipairs(self.branches) do
+            local vDist = vl.dist(v.ex,v.ey,x,y)
+            if vDist <= dist then
+                if v==selectedB or v.isDead then
+                    --this is the selected one so do nothing
+                else
+                    close = v
+                    dist = vDist
+                end
             end
-        end
+        end    
+        return close
+    else
+        return nil
     end
-        
-    
-    return close
 end
 
 return t

@@ -30,6 +30,9 @@ function game:draw()
         lg.print("leafEnergy: "..tree.leafEnergy,0,105)
         lg.print("Leaf Area: "..tree.leafArea,0,120)
         lg.print("Sunlight: "..environment.sunMod,0,135)
+        lg.print(rawData.saved,0,150)
+        lg.print(rawData.loaded,0,165)
+        
 
         for i,v in ipairs(tree.buds) do
             v:draw()
@@ -123,11 +126,16 @@ end
 
 function game:keypressed(key)
     --tree:grow(sun,10)
+    if DEBUG_MODE and key =="escape" then
+        storedTime = 0
+    end
+    
     if key == "r" then
         treeReset()
     elseif key == "s" then
-        tree:untickAll()
-        selectedB=nil
+        treeSave()
+    elseif key == "l" then
+        treeLoad()
     elseif key == "k" and selectedB then
         selectedB.isDead = true
         selectedB = nil
@@ -141,6 +149,8 @@ function game:keypressed(key)
     elseif key == " " then
         PAUSE = not PAUSE
     end
+    
+    
     --lg.setCanvas(cav)
         
 end
